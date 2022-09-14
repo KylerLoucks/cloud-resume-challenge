@@ -159,7 +159,7 @@ Outputs:
     Description: "POST Lambda Function ARN"
     Value: !GetAtt PostFunction.Arn
   PostFunctionIamRole:
-    Description: "Implicit IAM Role created for Put function"
+    Description: "Implicit IAM Role created for POST function"
     Value: !GetAtt PostFunctionRole.Arn
   Website:
     Description: S3 Static Website
