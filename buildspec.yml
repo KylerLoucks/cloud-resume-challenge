@@ -1,5 +1,8 @@
 version: 0.2
 phases:
+  install: # install python 3.9 on the build container, so SAM can do its thing
+    runtime-versions:
+      python: 3.9
   pre_build:
     commands:
       - echo "Running unit tests"
