@@ -13,5 +13,5 @@ phases:
   post_build:
     commands:
       - echo "Uploading website contents"
-      - echo "aws s3 sync --delete ./resume-site s3://www.kylerloucks.click
+      - aws s3 sync --delete ./resume-site s3://www.kylerloucks.click
       - echo "Build completed on `date`"
