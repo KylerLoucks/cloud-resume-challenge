@@ -1,0 +1,17 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo "Running unit tests"
+  build:
+    commands:
+      - echo "Build started on `date`"
+      - echo "Building SAM deployment"          
+      - sam build
+      - echo "Pushing the SAM deployment"
+      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+  post_build:
+    commands:
+      - echo "Uploading website contents"
+      - echo "aws s3 sync --delete ./resume-site s3://www.kylerloucks.click
+      - echo "Build completed on `date`"
