@@ -1,0 +1,166 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cloud-resume-challenge
+
+  Sample SAM Template for cloud-resume-challenge
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  Website:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: www.kylerloucks.click
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  Route53Records:
+    Type: "AWS::Route53::RecordSetGroup"
+    Properties:
+      HostedZoneId: Z06657563UYMVRJ8DTPQV # Id of the Hosted Zone created during domain registration
+      RecordSets:
+        - Name: www.kylerloucks.click
+          Type: A
+          AliasTarget:
+            HostedZoneId: Z2FDTNDATAQYW2 # CloudFront Id
+            DNSName: !GetAtt CloudFront.DomainName
+      
+
+  # Redirect:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     BucketName: kylerloucks.click
+  #     WebsiteConfiguration:
+  #       RedirectAllRequestsTo:
+  #         HostName: www.kylerloucks.click
+  #         Protocol: https # set to https when using cloudfront
+
+  ACMCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: www.kylerloucks.click
+      ValidationMethod: DNS
+
+  CloudFront:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        ViewerCertificate:
+          AcmCertificateArn: !Ref ACMCertificate
+          SslSupportMethod: sni-only
+        Aliases: 
+          - www.kylerloucks.click
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: redirect-to-https # change to allow-all if ACM isn't used. Otherwise, redirect-to-https
+          TargetOriginId: S3Origin
+          DefaultTTL: 0 # disable caching
+          MinTTL: 0 # disable caching
+          MaxTTL: 0 # disable caching
+          ForwardedValues:
+            QueryString: False
+        Origins:
+          - DomainName: www.kylerloucks.click.s3.us-east-1.amazonaws.com
+            Id: S3Origin # name to give the origin, which will be referenced in 'TargetOriginId'
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginIdentity}'
+        Enabled: "true"
+        DefaultRootObject: index.html
+    
+  CloudFrontOriginIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'origin identity'
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Website
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicRead
+            Effect: "Allow"
+            Action: 
+              - "s3:GetObject"
+            Principal:
+              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginIdentity}'
+            Resource:
+              - !Sub arn:aws:s3:::${Website}
+              - !Sub arn:aws:s3:::${Website}/*
+
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "cloud-resume-challenge"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: "ID"
+          AttributeType: "S"
+      KeySchema: # Primary Key attributes
+        - AttributeName: "ID" 
+          KeyType: "HASH" # Partition Key
+
+  PostFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Policies:
+        - DynamoDBCrudPolicy: # prebuilt SAM policy
+            TableName: !Ref DynamoDBTable
+      CodeUri: post-function/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        ApiGateway:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /post
+            Method: POST
+
+  GetFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Policies:
+        - DynamoDBCrudPolicy: # prebuilt SAM policy
+            TableName: !Ref DynamoDBTable
+      CodeUri: get-function/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        ApiGateway:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /get
+            Method: GET
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  Api:
+    Description: "API Gateway endpoint URL for Prod stage for GET function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get/"
+  GetFunction:
+    Description: "GET Lambda Function ARN"
+    Value: !GetAtt GetFunction.Arn
+  GetFunctionIamRole:
+    Description: "Implicit IAM Role created for GET function"
+    Value: !GetAtt GetFunctionRole.Arn
+  PostFunction:
+    Description: "POST Lambda Function ARN"
+    Value: !GetAtt PostFunction.Arn
+  PostFunctionIamRole:
+    Description: "Implicit IAM Role created for Put function"
+    Value: !GetAtt PostFunctionRole.Arn
+  Website:
+    Description: S3 Static Website
+    Value: !GetAtt Website.Arn

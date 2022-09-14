@@ -1,0 +1,121 @@
+* {
+    font-family: Cambria, Georgia, serif;
+    font-weight: 500;
+    line-height: 1.3rem;
+}
+
+
+
+.parent_container {
+    position: relative;
+    width: 100%;
+    max-width: 1024px;
+    background: rgb(207, 207, 207);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 20px 20px #888888;
+}
+
+.upper_container {
+    position: relative;
+    width: 100%;
+    max-width: 1024px;
+    background: rgb(236, 236, 236);
+}
+
+.middle_container {
+    background: rgb(255,255,255);
+}
+
+.info {
+    padding: 20px;
+}
+
+.info h1 {
+    text-align: center;
+    margin: auto;
+    font-size: 46px;
+    padding: 20px;
+}
+
+.info h2 {
+    text-align: center;
+    margin: auto;
+    font-size: 16px;
+}
+
+.info h3 {
+    text-align: center;
+    margin: auto;
+    font-size: 14px;
+}
+
+.info h4 {
+    text-align: center;
+    margin: auto;
+    font-size: 14px;
+}
+
+
+
+
+.badges {
+    margin: auto;
+    padding: 10px;
+    justify-content: center;
+    display: flex;
+}
+
+.projects {
+    padding: 20px;
+}
+
+.projects .project_title h1 {
+    font-size: 20px;
+}
+
+.projects .project_title li {
+    font-size: 14px;
+}
+
+
+.work_exp {
+    padding: 20px;
+}
+
+.work_title {
+    font-size: 22px;
+}
+
+.work_title .company {
+    font-size: 15px;
+}
+
+.work_description {
+    font-size: 15px;
+}
+
+.education {
+    padding: 20px;
+}
+
+.education_title {
+    font-size: 22px;
+}
+
+.education_title {
+    font-size: 22px;
+}
+
+.education_title .education_date {
+    font-size: 15px;
+}
+
+.skills {
+    padding: 20px;
+}
+
+.skills_list h1  {
+    font-size: 15px;
+}
