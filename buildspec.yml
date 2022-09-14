@@ -12,7 +12,7 @@ phases:
       - echo "Building SAM deployment"          
       - sam build
       - echo "Pushing the SAM deployment"
-      - sam deploy --no-confirm-changeset
+      - sam deploy
   post_build:
     commands:
       - echo "Uploading website contents"
