@@ -12,7 +12,7 @@ phases:
       - echo "Building SAM deployment"          
       - sam build
       - echo "Pushing the SAM deployment"
-      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name cloud-resume-challenge
+      - sam deploy --no-confirm-changeset
   post_build:
     commands:
       - echo "Uploading website contents"
