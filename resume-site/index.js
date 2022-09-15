@@ -2,7 +2,7 @@ update()
 
 // Make an API call to grab data containing streamer status
 async function getStreamData() {
-    const res = await fetch("https://0uywkvq4m7.execute-api.us-east-1.amazonaws.com/Prod/get", {
+    const res = await fetch("https://api.kylerloucks.click/get", {
     method: 'GET',
     mode: 'cors',
     });
@@ -11,7 +11,7 @@ async function getStreamData() {
 }
 
 async function updateDynamoDBTable() {
-    const res = await fetch("https://0uywkvq4m7.execute-api.us-east-1.amazonaws.com/Prod/post", {
+    const res = await fetch("https://api.kylerloucks.click/post", {
     method: 'POST',
     });
 }
