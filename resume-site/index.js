@@ -1,6 +1,6 @@
 update()
 
-// Make an API call to grab data containing streamer status
+// Make an API call to grab data containing viewer count
 async function getStreamData() {
     const res = await fetch("https://api.kylerloucks.click/get", {
     method: 'GET',
