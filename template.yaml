@@ -43,7 +43,13 @@ Resources:
   ACMCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: www.kylerloucks.click
+      DomainName: "*.kylerloucks.click"
+      SubjectAlternativeNames:
+           - kylerloucks.click
+           - "*.kylerloucks.click"
+      DomainValidationOptions:
+          - DomainName: kylerloucks.click
+            HostedZoneId: Z2FDTNDATAQYW2
       ValidationMethod: DNS
 
   CloudFront:
@@ -106,6 +112,16 @@ Resources:
         - AttributeName: "ID" 
           KeyType: "HASH" # Partition Key
 
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Domain:
+        DomainName: api.kylerloucks.click
+        CertificateArn: !Ref ACMCertificate
+        Route53:
+          HostedZoneId: Z2FDTNDATAQYW2
+
   PostFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -123,6 +139,8 @@ Resources:
           Properties:
             Path: /post
             Method: POST
+            RestApiId:
+              Ref: ApiGatewayApi
 
   GetFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
