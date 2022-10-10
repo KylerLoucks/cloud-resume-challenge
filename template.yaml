@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   cloud-resume-challenge
 
-  Sample SAM Template for cloud-resume-challenge
+  SAM Template for cloud-resume-challenge
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -43,7 +43,7 @@ Resources:
   ACMCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: "*.kylerloucks.click"
+      DomainName: "*.kylerloucks.click" # wildcard *. allows the use of api.kylerloucks.click
       SubjectAlternativeNames:
         - kylerloucks.click
         - "*.kylerloucks.click"
