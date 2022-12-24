@@ -115,7 +115,7 @@ Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: prod
+      StageName: Prod
       Domain:
         DomainName: api.kylerloucks.click
         CertificateArn: !Ref ACMCertificate
