@@ -121,9 +121,7 @@ Resources:
         CertificateArn: !Ref ACMCertificate
         Route53:
           HostedZoneId: Z06657563UYMVRJ8DTPQV # Id of the Hosted Zone created during domain registration
-      Cors: # Enable CORS on API Gateway, create 'options' method
-        AllowMethods: "'POST, GET'"
-        AllowOrigin: "'https://www.kylerloucks.click, https://kylerloucks.click'"
+
 
 
   PostFunction:
