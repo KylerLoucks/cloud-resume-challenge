@@ -10,5 +10,7 @@ ACM is used to provide SSL certificates. The backend is written in python and ut
 by updating the Viewer Counter on the website. HTML, CSS, and JavaScript are used for the frontend.
 It makes use of a DynamoDB database to store a counter for the number of visitors.
 
+AWS SAM (Serverless Application Model) is used for infrastructure as code (IaC) to deploy everything and make deployments with a CI/CD pipeline simpler.
+
 ## CI/CD Pipeline
 This project utilizes AWS CodePipeline & CodeBuild to automate the latest deployments made to this github repository.
